@@ -1,134 +1,120 @@
 package com.example.PcStore.model;
 
-import com.example.PcStore.model.enums.OrderStatus;
+
+
 import com.example.PcStore.model.inventory.PC;
 import com.example.PcStore.model.inventory.pcPart;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-@Table(name = "customer_orders")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "orders")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_number", unique = true, nullable = false)
-    private String orderNumber = generateOrderNumber();
-
-    @Column(nullable = false)
     private String customerName;
-
-    @Column(nullable = false)
     private String customerEmail;
-
-    @Column(name = "customer_phone")
     private String customerPhone;
 
-    @Column(name = "shipping_address", nullable = false)
-    private String shippingAddress;
+    @Temporal(TemporalType.DATE)
+    private Date orderDate;
 
-    @Column(name = "billing_address", nullable = false)
-    private String billingAddress;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "order_date", nullable = false)
-    private Date orderDate = new Date();
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "estimated_delivery")
+    @Temporal(TemporalType.DATE)
     private Date estimatedDelivery;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private OrderStatus status = OrderStatus.PENDING;
+    private String status;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "order_parts",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "part_id")
-    )
-    private List<pcPart> parts;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "order_pcs",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "pc_id")
-    )
-    private List<PC> pcs;
-
-    @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
-    private BigDecimal subtotal = BigDecimal.ZERO;
-
-    @Column(name = "tax_amount", nullable = false, precision = 10, scale = 2)
-    private BigDecimal taxAmount = BigDecimal.ZERO;
-
-    @Column(name = "shipping_cost", nullable = false, precision = 10, scale = 2)
-    private BigDecimal shippingCost = BigDecimal.ZERO;
-
-    @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalPrice = BigDecimal.ZERO;
-
-    @Column(name = "payment_method", nullable = false)
-    private String paymentMethod;
-
-    @Column(name = "notes", length = 1000)
     private String notes;
 
-    @Version
-    private Long version;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<pcPart> parts;
 
-    // Business logic methods
-    @PrePersist
-    protected void onCreate() {
-        if (this.orderNumber == null) {
-            this.orderNumber = generateOrderNumber();
-        }
-        calculateTotals();
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<PC> pcs;
+
+    // Getters and Setters
+
+    public Long getId() {
+        return id;
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        calculateTotals();
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    private String generateOrderNumber() {
-        return "ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void calculateTotals() {
-        BigDecimal partsTotal = parts != null ?
-                parts.stream()
-                        .map(pcPart::getPrice)
-                        .map(BigDecimal::valueOf)  // Convert Double to BigDecimal
-                        .reduce(BigDecimal.ZERO, BigDecimal::add) :
-                BigDecimal.ZERO;
-
-        BigDecimal pcsTotal = pcs != null ?
-                pcs.stream()
-                        .map(PC::getPrice)
-                        .map(BigDecimal::valueOf)  // Convert Double to BigDecimal
-                        .reduce(BigDecimal.ZERO, BigDecimal::add) :
-                BigDecimal.ZERO;
-
-        this.subtotal = partsTotal.add(pcsTotal);
-        this.totalPrice = subtotal.add(taxAmount).add(shippingCost);
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
-    public boolean isCancellable() {
-        return status == OrderStatus.PENDING || status == OrderStatus.PROCESSING;
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public Date getEstimatedDelivery() {
+        return estimatedDelivery;
+    }
+
+    public void setEstimatedDelivery(Date estimatedDelivery) {
+        this.estimatedDelivery = estimatedDelivery;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public List<pcPart> getParts() {
+        return parts;
+    }
+
+    public void setParts(List<pcPart> parts) {
+        this.parts = parts;
+    }
+
+    public List<PC> getPcs() {
+        return pcs;
+    }
+
+    public void setPcs(List<PC> pcs) {
+        this.pcs = pcs;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }
