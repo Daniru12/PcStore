@@ -18,8 +18,10 @@ public class pcPart {
 
     private String partName;
     private String type; // CPU, GPU, RAM, etc.
-
+    private double price;
     @ManyToOne
     @JoinColumn(name = "pc_id")
     private PC pc;
+
+
 }

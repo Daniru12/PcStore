@@ -11,4 +11,9 @@ public class PCDto {
     private Long id;
     private String name;
     private String brand;
+    private double price;
+
+    public double getPrice() {
+        return price;
+    }
 }

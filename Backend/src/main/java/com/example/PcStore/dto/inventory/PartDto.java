@@ -12,4 +12,9 @@ public class PartDto {
     private String partName;
     private String type;
     private Long pcId;
+    private Double price;
+
+    public double getPrice() {
+        return price;
+    }
 }
