@@ -21,7 +21,7 @@ public class OrderController {
         return orderService.createOrder(orderDto);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public List<OrderDto> getAllOrders() {
         return orderService.getAllOrders();
     }
@@ -31,8 +31,10 @@ public class OrderController {
         return orderService.getOrderById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteOrder(@PathVariable Long id) {
+    @DeleteMapping("delete/{id}")
+    public String deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
+        return "Order has been deleted";
+
     }
 }
