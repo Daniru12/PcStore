@@ -42,6 +42,7 @@ public class PartService {
         part.setPartName(partDto.getPartName());
         part.setType(partDto.getType());
         part.setPc(pc); // set PC reference
+        part.setPrice(partDto.getPrice());
 
         // Save part
         pcPart savedPart = pcPartRepository.save(part);
@@ -52,6 +53,7 @@ public class PartService {
         response.setPartName(savedPart.getPartName());
         response.setType(savedPart.getType());
         response.setPcId(savedPart.getPc().getId());
+        response.setPrice(savedPart.getPrice());
 
         return response;
     }
@@ -76,10 +78,11 @@ public class PartService {
         PC pc = pcRepository.findById(partDto.getPcId())
                 .orElseThrow(() -> new RuntimeException("PC not found with ID: " + partDto.getPcId()));
 
-        // Update fields
+        // Update fields including price
         existingPart.setPartName(partDto.getPartName());
         existingPart.setType(partDto.getType());
         existingPart.setPc(pc);
+        existingPart.setPrice(partDto.getPrice());  // <-- Set price
 
         // Save and return updated part
         pcPart updated = pcPartRepository.save(existingPart);
@@ -89,9 +92,11 @@ public class PartService {
         response.setPartName(updated.getPartName());
         response.setType(updated.getType());
         response.setPcId(updated.getPc().getId());
+        response.setPrice(updated.getPrice());      // <-- Return price
 
         return response;
     }
+
 
     public String deletepart(@PathVariable Long partid) {
         pcPartRepository.detailpcpartbyid(partid);
