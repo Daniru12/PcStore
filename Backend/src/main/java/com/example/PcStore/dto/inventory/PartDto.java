@@ -17,4 +17,8 @@ public class PartDto {
     public double getPrice() {
         return price;
     }
+
+    public Long getPcId() {
+        return id;
+    }
 }

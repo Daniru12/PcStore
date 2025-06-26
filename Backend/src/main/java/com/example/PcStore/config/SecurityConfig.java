@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/pcs/**").permitAll()
+                        .requestMatchers("/api/inquiries").permitAll()  // Allow public inquiry creation
                         .requestMatchers("/api/parts/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/orders/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

@@ -49,7 +49,7 @@ public class PartService {
 
         // Map back to DTO to return
         PartDto response = new PartDto();
-        response.setId(savedPart.getId());
+        response.wait(savedPart.getId());
         response.setPartName(savedPart.getPartName());
         response.setType(savedPart.getType());
         response.setPcId(savedPart.getPc().getId());
