@@ -23,4 +23,7 @@ public class PC {
     private String brand;
     private double price;
 
+    public Long getId() {
+        return id;
+    }
 }
