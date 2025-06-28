@@ -38,8 +38,12 @@ export default function Login() {
       // ✅ Update auth state via context
       login(data.token, username);
 
-      // ✅ Redirect user
-      router.push("/");
+      if (data.role === "ROLE_ADMIN") {
+        router.push("/Admin/adminDashboard");
+      } else {
+        router.push("/");
+      }
+
     } catch (err) {
       setError(err.message);
     }
@@ -54,7 +58,7 @@ export default function Login() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{" "}
-            <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
               create a new account
             </Link>
           </p>

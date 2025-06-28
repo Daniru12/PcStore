@@ -14,11 +14,43 @@ public class PartDto {
     private Long pcId;
     private Double price;
 
-    public double getPrice() {
-        return price;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getPartName() {
+        return partName;
+    }
+
+    public void setPartName(String partName) {
+        this.partName = partName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Long getPcId() {
-        return id;
+        return pcId;
+    }
+
+    public void setPcId(Long pcId) {
+        this.pcId = pcId;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }
