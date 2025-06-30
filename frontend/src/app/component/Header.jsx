@@ -51,7 +51,7 @@ export default function Header() {
                 </button>
               </>
             ) : (
-              <Link href="/cart" className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
+              <Link href="/AddToCart" className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
