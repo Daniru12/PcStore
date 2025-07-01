@@ -1,12 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { AuthContext } from "../component/AuthContext"; // adjust path if needed
 
 export default function OrderPage() {
+  const { isLoggedIn, username, email: authEmail, phone: authPhone } = useContext(AuthContext);
+
   const [cart, setCart] = useState([]);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
+
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -22,19 +29,33 @@ export default function OrderPage() {
     }
   }, [searchParams]);
 
+  // Pre-fill user data on login
+  useEffect(() => {
+    if (isLoggedIn) {
+      setCustomerName(username);
+      setCustomerEmail(authEmail);
+      setCustomerPhone(authPhone);
+    }
+  }, [isLoggedIn, username, authEmail, authPhone]);
+
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   const handleConfirmOrder = async () => {
+    if (!customerEmail || !customerPhone) {
+      alert("Please enter your email and phone number.");
+      return;
+    }
+
     const orderDto = {
-      customerName: "Daniru",  // Replace with actual user data if you have
-      customerEmail: "Daniru@example.com", // Replace with actual user data
-      customerPhone: "123-456-7890", // Replace with actual user data
-      orderDate: new Date().toISOString().split('T')[0], // format YYYY-MM-DD
+      customerName: customerName || "Guest",
+      customerEmail,
+      customerPhone,
+      orderDate: new Date().toISOString().split("T")[0],
       status: "Pending",
       notes: "Please deliver between 9 AM - 5 PM",
-      items: cart.map(item => ({
+      items: cart.map((item) => ({
         productId: item.id,
         quantity: item.quantity,
       })),
@@ -69,6 +90,7 @@ export default function OrderPage() {
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-4xl font-bold text-center mb-8">Order Confirmation</h1>
+
       {cart.length === 0 ? (
         <p className="text-center text-gray-600">No items in the order.</p>
       ) : !orderPlaced ? (
@@ -82,13 +104,48 @@ export default function OrderPage() {
               />
               <div>
                 <h3 className="text-lg font-semibold">{item.name}</h3>
-                <p className="text-gray-600">${item.price.toFixed(2)} x {item.quantity}</p>
+                <p className="text-gray-600">
+                  ${item.price.toFixed(2)} x {item.quantity}
+                </p>
               </div>
             </div>
           ))}
+
+          <div className="my-6 p-4 border rounded bg-gray-50">
+            <h2 className="text-xl font-semibold mb-2">Customer Information</h2>
+            <p>
+              <strong>Name:</strong> {customerName || "Guest"}
+            </p>
+
+            <label className="block mt-3">
+              <span className="text-gray-700">Email:</span>
+              <input
+                type="email"
+                value={customerEmail}
+                onChange={(e) => setCustomerEmail(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded px-3 py-2"
+                placeholder="Enter your email"
+                required
+              />
+            </label>
+
+            <label className="block mt-3">
+              <span className="text-gray-700">Phone Number:</span>
+              <input
+                type="tel"
+                value={customerPhone}
+                onChange={(e) => setCustomerPhone(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded px-3 py-2"
+                placeholder="Enter your phone number"
+                required
+              />
+            </label>
+          </div>
+
           <div className="mt-4 text-right">
             <p className="text-lg font-semibold">Total: ${calculateTotal().toFixed(2)}</p>
           </div>
+
           <button
             onClick={handleConfirmOrder}
             className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition-colors mt-4"
