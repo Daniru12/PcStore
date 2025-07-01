@@ -1,28 +1,42 @@
 package com.example.PcStore.dto;
 
-import com.example.PcStore.dto.inventory.PCDto;
-import com.example.PcStore.dto.inventory.PartDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderDto {
+
+    private Long id;
 
     private String customerName;
     private String customerEmail;
     private String customerPhone;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
-    private Date estimatedDelivery;
 
     private String status;
 
-    private List<PartDto> parts;
-    private List<PCDto> pcs;
-
     private String notes;
 
-    // Getters and Setters
+    private List<OrderItemDto> items;
+
+    // Optional: If you want manual getters/setters (not needed if using Lombok)
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getCustomerName() {
         return customerName;
@@ -56,14 +70,6 @@ public class OrderDto {
         this.orderDate = orderDate;
     }
 
-    public Date getEstimatedDelivery() {
-        return estimatedDelivery;
-    }
-
-    public void setEstimatedDelivery(Date estimatedDelivery) {
-        this.estimatedDelivery = estimatedDelivery;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -72,27 +78,19 @@ public class OrderDto {
         this.status = status;
     }
 
-    public List<PartDto> getParts() {
-        return parts;
-    }
-
-    public void setParts(List<PartDto> parts) {
-        this.parts = parts;
-    }
-
-    public List<PCDto> getPcs() {
-        return pcs;
-    }
-
-    public void setPcs(List<PCDto> pcs) {
-        this.pcs = pcs;
-    }
-
     public String getNotes() {
         return notes;
     }
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public List<OrderItemDto> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItemDto> items) {
+        this.items = items;
     }
 }
