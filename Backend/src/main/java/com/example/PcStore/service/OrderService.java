@@ -1,77 +1,82 @@
 package com.example.PcStore.service;
 
 import com.example.PcStore.dto.OrderDto;
+import com.example.PcStore.dto.ProductDto;
 import com.example.PcStore.model.Order;
-import com.example.PcStore.model.inventory.PC;
-import com.example.PcStore.model.inventory.pcPart;
+import com.example.PcStore.model.Product;
 import com.example.PcStore.repository.OrderRepository;
-import com.example.PcStore.repository.inventory.PCRepository;
-import com.example.PcStore.repository.inventory.PartRepository;
+import com.example.PcStore.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final PartRepository partRepository;
-    private final PCRepository pcRepository;
+    private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
     public OrderService(OrderRepository orderRepository,
-                        PartRepository partRepository,
-                        PCRepository pcRepository,
+                        ProductRepository productRepository,
                         ModelMapper modelMapper) {
         this.orderRepository = orderRepository;
-        this.partRepository = partRepository;
-        this.pcRepository = pcRepository;
+        this.productRepository = productRepository;
         this.modelMapper = modelMapper;
     }
 
     @Transactional
     public OrderDto createOrder(OrderDto orderDto) {
-        Order order = modelMapper.map(orderDto, Order.class);
-
-        // Load managed Part entities
-        List<pcPart> managedParts = orderDto.getParts() == null ? List.of() :
-                orderDto.getParts().stream()
-                        .map(partDto -> partRepository.findById(partDto.getId())
-                                .orElseThrow(() -> new RuntimeException("Part not found: " + partDto.getId())))
-                        .collect(Collectors.toList());
-
-        // Load managed PC entities
-        List<PC> managedPcs = orderDto.getPcs() == null ? List.of() :
-                orderDto.getPcs().stream()
-                        .map(pcDto -> pcRepository.findById(pcDto.getId())
-                                .orElseThrow(() -> new RuntimeException("PC not found: " + pcDto.getId())))
-                        .collect(Collectors.toList());
-
-        order.setParts(managedParts);
-        order.setPcs(managedPcs);
-
-        Order savedOrder = orderRepository.save(order);
-        return modelMapper.map(savedOrder, OrderDto.class);
+        try {
+            Order order = modelMapper.map(orderDto, Order.class);
+            if (order.getOrderDate() == null) {
+                order.setOrderDate(new Date());
+            }
+            List<Product> products = orderDto.getParts().stream()
+                    .map(productDto -> {
+                        if (productDto.getId() == null) {
+                            throw new IllegalArgumentException("Product ID is required");
+                        }
+                        return productRepository.findById(productDto.getId())
+                                .orElseThrow(() -> new IllegalArgumentException("Product not found: " + productDto.getId()));
+                    })
+                    .collect(Collectors.toList());
+            order.setParts(products);
+            Order savedOrder = orderRepository.save(order);
+            return modelMapper.map(savedOrder, OrderDto.class);
+        } catch (IllegalArgumentException e) {
+            throw e; // Returns 400
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create order: " + e.getMessage(), e); // Returns 500
+        }
     }
 
     public List<OrderDto> getAllOrders() {
-        List<Order> orders = orderRepository.findAll();
-        return modelMapper.map(orders, new TypeToken<List<OrderDto>>() {}.getType());
+        return orderRepository.findAll().stream()
+                .map(order -> modelMapper.map(order, OrderDto.class))
+                .collect(Collectors.toList());
     }
 
     public OrderDto getOrderById(Long id) {
-        return orderRepository.findById(id)
-                .map(order -> modelMapper.map(order, OrderDto.class))
-                .orElse(null);
+        Optional<Order> optionalOrder = orderRepository.findById(id);
+        if (optionalOrder.isEmpty()) {
+            throw new RuntimeException("Order not found with ID: " + id);
+        }
+        return modelMapper.map(optionalOrder.get(), OrderDto.class);
     }
 
-    public void deleteOrder(Long id) {
+    public String deleteOrder(Long id) {
+        if (!orderRepository.existsById(id)) {
+            return "Order ID not found";
+        }
         orderRepository.deleteById(id);
+        return "Order has been deleted";
     }
 }

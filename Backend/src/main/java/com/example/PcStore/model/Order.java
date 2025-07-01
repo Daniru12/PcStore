@@ -4,10 +4,17 @@ package com.example.PcStore.model;
 
 import com.example.PcStore.model.inventory.PC;
 import com.example.PcStore.model.inventory.pcPart;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 import java.util.List;
-
+@NoArgsConstructor
+@Data
+@AllArgsConstructor
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -15,28 +22,33 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String customerName;
     private String customerEmail;
     private String customerPhone;
-
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date orderDate;
-
-    @Temporal(TemporalType.DATE)
-    private Date estimatedDelivery;
-
     private String status;
-
     private String notes;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<pcPart> parts;
+    @OneToMany
+    @JoinTable(
+            name = "orders_products",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> parts;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<PC> pcs;
 
     // Getters and Setters
+
+    public List<Product> getParts() {
+        return parts;
+    }
+
+    public void setParts(List<Product> parts) {
+        this.parts = parts;
+    }
 
     public Long getId() {
         return id;
@@ -78,13 +90,6 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public Date getEstimatedDelivery() {
-        return estimatedDelivery;
-    }
-
-    public void setEstimatedDelivery(Date estimatedDelivery) {
-        this.estimatedDelivery = estimatedDelivery;
-    }
 
     public String getStatus() {
         return status;
@@ -94,21 +99,9 @@ public class Order {
         this.status = status;
     }
 
-    public List<pcPart> getParts() {
-        return parts;
-    }
 
-    public void setParts(List<pcPart> parts) {
-        this.parts = parts;
-    }
 
-    public List<PC> getPcs() {
-        return pcs;
-    }
 
-    public void setPcs(List<PC> pcs) {
-        this.pcs = pcs;
-    }
 
     public String getNotes() {
         return notes;
