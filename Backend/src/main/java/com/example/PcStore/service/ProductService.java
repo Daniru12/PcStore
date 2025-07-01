@@ -2,6 +2,7 @@ package com.example.PcStore.service;
 
 import com.example.PcStore.model.Product;
 import com.example.PcStore.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,6 +69,21 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    @Transactional
+    public Product updateStock(Long productId, int quantityChange) {
+        Product product = getProduct(productId);
+
+        int newStock = product.getStock() + quantityChange;
+        if (newStock < 0) {
+            throw new IllegalStateException(
+                    String.format("Insufficient stock. Current: %d, Requested change: %d",
+                            product.getStock(), quantityChange)
+            );
+        }
+
+        product.setStock(newStock);
+        return productRepository.save(product);
+    }
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             throw new ResponseStatusException(
