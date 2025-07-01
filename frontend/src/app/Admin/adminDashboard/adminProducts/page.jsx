@@ -1,10 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AdminProducts() {
     const [products, setProducts] = useState([]);
+    const router = useRouter();
     const [error, setError] = useState(null);
+
+    const handleAddNewProduct = () => {
+        router.push('/Admin/adminDashboard/adminProducts/create');
+    };
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -44,6 +50,15 @@ export default function AdminProducts() {
         <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-8">
             <div className="max-w-7xl mx-auto bg-white shadow-md rounded-2xl p-6 sm:p-10">
                 <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Product Management</h1>
+
+                <div className="flex justify-end mb-4">
+                    <button
+                        onClick={handleAddNewProduct}
+                        className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors"
+                    >
+                        Add New Product
+                    </button>
+                </div>
 
                 {error && (
                     <div className="text-red-600 bg-red-100 border border-red-300 p-4 rounded mb-6 text-sm">

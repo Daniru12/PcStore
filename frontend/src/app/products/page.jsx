@@ -30,41 +30,27 @@ export default function Products() {
     fetchProducts();
   }, []);
 
-  // Helper to get current quantity of product in cart
-  const getCartQuantity = (productId) => {
-    const item = cart.find((i) => i.id === productId);
-    return item ? item.quantity : 0;
-  };
-
   const addToCart = (product) => {
-    const currentQuantity = getCartQuantity(product.id);
-    if (currentQuantity < product.stock) {
-      setCart((prevCart) => {
-        const existingItem = prevCart.find((item) => item.id === product.id);
-        if (existingItem) {
-          return prevCart.map((item) =>
-            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-          );
-        }
-        return [...prevCart, { ...product, quantity: 1 }];
-      });
-    }
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
   };
 
   const updateQuantity = (productId, delta) => {
-    const product = products.find((p) => p.id === productId);
     setCart((prevCart) =>
       prevCart
-        .map((item) => {
-          if (item.id === productId) {
-            const newQuantity = item.quantity + delta;
-            if (newQuantity <= 0) return null; // remove if zero or less
-            if (product && newQuantity > product.stock) return item; // don't exceed stock
-            return { ...item, quantity: newQuantity };
-          }
-          return item;
-        })
-        .filter(Boolean)
+        .map((item) =>
+          item.id === productId
+            ? { ...item, quantity: Math.max(1, item.quantity + delta) }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
     );
   };
 
@@ -113,16 +99,12 @@ export default function Products() {
             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
           />
         </svg>
-        {cartCount > 0 && (
-          <span className="ml-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-            {cartCount}
-          </span>
-        )}
+        {cartCount > 0 && <span className="ml-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">{cartCount}</span>}
       </button>
 
       {isCartOpen && (
-        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96 h-3/4 overflow-y-auto relative">
+        <div className="fixed inset-0  backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96 h-3/4 overflow-y-auto">
             <button
               onClick={() => setIsCartOpen(false)}
               className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
@@ -134,52 +116,43 @@ export default function Products() {
               <p className="text-gray-600">Your cart is empty.</p>
             ) : (
               <>
-                {cart.map((item) => {
-                  const productStock = products.find((p) => p.id === item.id)?.stock || 0;
-                  return (
-                    <div key={item.id} className="mb-4 border-b pb-4">
-                      <div className="flex items-center">
-                        <img
-                          src={item.imageUrl || "/placeholder-image.png"}
-                          alt={item.name}
-                          className="w-16 h-16 object-cover rounded mr-4"
-                        />
-                        <div className="flex-1">
-                          <h3 className="text-lg font-semibold">{item.name}</h3>
-                          <p className="text-gray-600">
-                            ${item.price.toFixed(2)} x {item.quantity}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Stock available: {productStock}
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => removeFromCart(item.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          Remove
-                        </button>
+                {cart.map((item) => (
+                  <div key={item.id} className="mb-4 border-b pb-4">
+                    <div className="flex items-center">
+                      <img
+                        src={item.imageUrl || "/placeholder-image.png"}
+                        alt={item.name}
+                        className="w-16 h-16 object-cover rounded mr-4"
+                      />
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold">{item.name}</h3>
+                        <p className="text-gray-600">${item.price.toFixed(2)} x {item.quantity}</p>
                       </div>
-                      <div className="flex items-center mt-2">
-                        <button
-                          onClick={() => updateQuantity(item.id, -1)}
-                          className="bg-gray-300 px-3 py-1 rounded-l"
-                          disabled={item.quantity <= 1}
-                        >
-                          -
-                        </button>
-                        <span className="px-4 py-1 bg-white border-t border-b">{item.quantity}</span>
-                        <button
-                          onClick={() => updateQuantity(item.id, 1)}
-                          className="bg-gray-300 px-3 py-1 rounded-r"
-                          disabled={item.quantity >= productStock}
-                        >
-                          +
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        Remove
+                      </button>
                     </div>
-                  );
-                })}
+                    <div className="flex items-center mt-2">
+                      <button
+                        onClick={() => updateQuantity(item.id, -1)}
+                        className="bg-gray-300 px-3 py-1 rounded-l"
+                        disabled={item.quantity <= 1}
+                      >
+                        -
+                      </button>
+                      <span className="px-4 py-1 bg-white border-t border-b">{item.quantity}</span>
+                      <button
+                        onClick={() => updateQuantity(item.id, 1)}
+                        className="bg-gray-300 px-3 py-1 rounded-r"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                ))}
                 <div className="mt-4">
                   <p className="text-lg font-semibold">Total: ${calculateTotal().toFixed(2)}</p>
                 </div>
@@ -197,43 +170,28 @@ export default function Products() {
 
       <h1 className="text-4xl font-bold text-center mb-8 mt-12">Our Products</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product) => {
-          const inCartQuantity = getCartQuantity(product.id);
-          const isOutOfStock = product.stock === 0;
-          const isAddDisabled = inCartQuantity >= product.stock;
-
-          return (
-            <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img
-                src={product.imageUrl || "/placeholder-image.png"}
-                alt={product.name}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
-                <p className="text-gray-600 text-sm mb-2 line-clamp-3">{product.description}</p>
-                <p className="text-sm mb-2">
-                  <strong>Stock: </strong>
-                  {product.stock > 0 ? product.stock : <span className="text-red-500">Out of stock</span>}
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-bold text-blue-600">${product.price.toFixed(2)}</span>
-                  <button
-                    onClick={() => addToCart(product)}
-                    className={`px-3 py-1 rounded-full transition-colors ${
-                      isAddDisabled || isOutOfStock
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-blue-500 text-white hover:bg-blue-600"
-                    }`}
-                    disabled={isAddDisabled || isOutOfStock}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
+        {products.map((product) => (
+          <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <img
+              src={product.imageUrl || "/placeholder-image.png"}
+              alt={product.name}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-4">
+              <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
+              <p className="text-gray-600 text-sm mb-4 line-clamp-3">{product.description}</p>
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-bold text-blue-600">${product.price.toFixed(2)}</span>
+                <button
+                  onClick={() => addToCart(product)}
+                  className="bg-blue-500 text-white px-3 py-1 rounded-full hover:bg-blue-600 transition-colors"
+                >
+                  Add to Cart
+                </button>
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
     </div>
   );
