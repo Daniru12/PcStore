@@ -1,8 +1,9 @@
 package com.example.PcStore.service;
 
 import com.example.PcStore.dto.OrderDto;
-import com.example.PcStore.dto.ProductDto;
+import com.example.PcStore.dto.OrderItemDto;
 import com.example.PcStore.model.Order;
+import com.example.PcStore.model.OrderItem;
 import com.example.PcStore.model.Product;
 import com.example.PcStore.repository.OrderRepository;
 import com.example.PcStore.repository.ProductRepository;
@@ -15,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,30 +36,44 @@ public class OrderService {
 
     @Transactional
     public OrderDto createOrder(OrderDto orderDto) {
-        try {
-            // Validate order data
-            validateOrder(orderDto);
+        validateOrder(orderDto);
 
-            // Create order entity
-            Order order = modelMapper.map(orderDto, Order.class);
-            if (order.getOrderDate() == null) {
-                order.setOrderDate(new Date());
+        Order order = new Order();
+        order.setCustomerName(orderDto.getCustomerName());
+        order.setCustomerEmail(orderDto.getCustomerEmail());
+        order.setCustomerPhone(orderDto.getCustomerPhone());
+        order.setOrderDate(orderDto.getOrderDate() != null ? orderDto.getOrderDate() : new Date());
+        order.setStatus(orderDto.getStatus());
+        order.setNotes(orderDto.getNotes());
+
+        List<OrderItem> orderItems = processOrderItems(order, orderDto.getItems());
+        order.setItems(orderItems);
+
+        Order savedOrder = orderRepository.save(order);
+        return modelMapper.map(savedOrder, OrderDto.class);
+    }
+
+    private List<OrderItem> processOrderItems(Order order, List<OrderItemDto> itemDtos) {
+        return itemDtos.stream().map(itemDto -> {
+            Product product = productRepository.findById(itemDto.getProductId())
+                    .orElseThrow(() -> new IllegalArgumentException("Product not found: " + itemDto.getProductId()));
+
+            if (product.getStock() < itemDto.getQuantity()) {
+                throw new IllegalArgumentException("Insufficient stock for product: " + product.getName());
             }
 
-            // Process products and reduce stock
-            List<Product> orderedProducts = processOrderProducts(orderDto.getParts());
-            order.setParts(orderedProducts);
+            // Reduce stock
+            product.setStock(product.getStock() - itemDto.getQuantity());
+            productRepository.save(product);
 
-            // Save the order
-            Order savedOrder = orderRepository.save(order);
-            return modelMapper.map(savedOrder, OrderDto.class);
+            // Create and return OrderItem
+            OrderItem item = new OrderItem();
+            item.setOrder(order);
+            item.setProduct(product);
+            item.setQuantity(itemDto.getQuantity());
 
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Failed to create order: " + e.getMessage(), e);
-        }
+            return item;
+        }).collect(Collectors.toList());
     }
 
     private void validateOrder(OrderDto orderDto) {
@@ -72,37 +86,9 @@ public class OrderService {
         if (orderDto.getCustomerEmail() == null || orderDto.getCustomerEmail().trim().isEmpty()) {
             throw new IllegalArgumentException("Customer email is required");
         }
-        if (orderDto.getParts() == null || orderDto.getParts().isEmpty()) {
-            throw new IllegalArgumentException("Order must contain at least one product");
+        if (orderDto.getItems() == null || orderDto.getItems().isEmpty()) {
+            throw new IllegalArgumentException("Order must contain at least one item");
         }
-    }
-
-    private List<Product> processOrderProducts(List<ProductDto> productDtos) {
-        return productDtos.stream()
-                .map(productDto -> {
-                    // Validate product ID
-                    if (productDto.getId() == null) {
-                        throw new IllegalArgumentException("Product ID is required");
-                    }
-
-                    // Get product from repository
-                    Product product = productRepository.findById(productDto.getId())
-                            .orElseThrow(() -> new IllegalArgumentException(
-                                    "Product not found with ID: " + productDto.getId()));
-
-                    // Check and reduce stock
-                    if (product.getStock() <= 0) {
-                        throw new IllegalArgumentException(
-                                "Product out of stock: " + product.getName());
-                    }
-
-                    // Reduce stock by 1 (assuming 1 quantity per product)
-                    product.setStock(product.getStock() - 1);
-                    productRepository.save(product);
-
-                    return product;
-                })
-                .collect(Collectors.toList());
     }
 
     public List<OrderDto> getAllOrders() {

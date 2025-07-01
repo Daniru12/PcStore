@@ -26,10 +26,9 @@ public class OrderDto {
 
     private String notes;
 
-    private List<ProductDto> parts;
+    private List<OrderItemDto> items;
 
-
-    // Getters and Setters
+    // Optional: If you want manual getters/setters (not needed if using Lombok)
 
     public Long getId() {
         return id;
@@ -87,11 +86,11 @@ public class OrderDto {
         this.notes = notes;
     }
 
-    public List<ProductDto> getParts() {
-        return parts;
+    public List<OrderItemDto> getItems() {
+        return items;
     }
 
-    public void setParts(List<ProductDto> parts) {
-        this.parts = parts;
+    public void setItems(List<OrderItemDto> items) {
+        this.items = items;
     }
 }

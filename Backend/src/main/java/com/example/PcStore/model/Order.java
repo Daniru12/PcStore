@@ -31,24 +31,21 @@ public class Order {
     private String status;
     private String notes;
 
-    @OneToMany
-    @JoinTable(
-            name = "orders_products",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> parts;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> items;
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+    }
 
 
     // Getters and Setters
 
-    public List<Product> getParts() {
-        return parts;
-    }
 
-    public void setParts(List<Product> parts) {
-        this.parts = parts;
-    }
 
     public Long getId() {
         return id;
