@@ -69,7 +69,12 @@ export default function Products() {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
+
   const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
+
+  const handleViewProduct = (productId) => {
+    router.push(`/products/${productId}`);
+  };
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading products...</div>;
@@ -187,6 +192,12 @@ export default function Products() {
                   className="bg-blue-500 text-white px-3 py-1 rounded-full hover:bg-blue-600 transition-colors"
                 >
                   Add to Cart
+                </button>
+                 <button
+                  onClick={() => handleViewProduct(product.id)}
+                  className="bg-gray-500 text-white px-3 py-1 rounded-full hover:bg-gray-600 transition-colors"
+                >
+                  View
                 </button>
               </div>
             </div>
