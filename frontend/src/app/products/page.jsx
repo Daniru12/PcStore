@@ -190,6 +190,14 @@ export default function Products() {
                 </button>
               </div>
             </div>
+            <div className="p-4 pt-0 flex justify-between items-center">
+              <button
+                onClick={() => router.push(`/products/${product.id}`)}
+                className="text-blue-600 hover:underline text-sm"
+              >
+                View Product
+              </button>
+            </div>
           </div>
         ))}
       </div>
