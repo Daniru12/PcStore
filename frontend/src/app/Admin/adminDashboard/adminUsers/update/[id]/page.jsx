@@ -17,6 +17,7 @@ export default function UpdateUserAdmin({ params }) {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
+    
     useEffect(() => {
         const fetchUser = async () => {
             const token = localStorage.getItem("token");
