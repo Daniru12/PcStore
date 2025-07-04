@@ -86,4 +86,29 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    public User updateUser(Long id, User userDetails) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id " + id));
+
+        user.setUsername(userDetails.getUsername());
+        user.setEmail(userDetails.getEmail());
+        user.setFullname(userDetails.getFullname());
+        // You might want to handle password updates separately or only allow specific fields to be updated
+        user.setRole(userDetails.getRole());
+
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id " + id));
+
+        userRepository.delete(user);
+    }
+
+    public User findUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id " + id));
+    }
 }
