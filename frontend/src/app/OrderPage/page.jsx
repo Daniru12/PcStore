@@ -187,6 +187,7 @@ export default function OrderPage() {
       ) : (
         <p className="text-center text-gray-600">Loading order details...</p>
       )}
+      
     </div>
   );
 }
