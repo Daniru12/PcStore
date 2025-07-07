@@ -4,27 +4,38 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useContext } from "react";
-import { AuthContext } from "../component/AuthContext";
+import Image from "next/image";
 import gsap from "gsap";
 
-export default function Login() {
+export default function Signup() {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullname, setFullname] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [backgroundIndex, setBackgroundIndex] = useState(0);
   const router = useRouter();
-  const { login } = useContext(AuthContext);
 
   // Refs for GSAP animations
   const formRef = useRef(null);
   const logoRef = useRef(null);
   const titleRef = useRef(null);
   const errorRef = useRef(null);
+  const toastRef = useRef(null);
   const inputsRef = useRef([]);
   const buttonRef = useRef(null);
   const footerRef = useRef(null);
   const floatersRef = useRef([]);
+
+  const backgrounds = [
+    "/images/pc-setup-1.jpg",
+    "/images/gaming-pc.jpg",
+    "/images/tech-showcase.jpg",
+    "https://i.postimg.cc/wjD3ZGy0/image.png", // External image
+    // If external image fails, download it and use: "/images/new-background.png"
+  ];
 
   useEffect(() => {
     // Initialize animations
@@ -82,7 +93,19 @@ export default function Login() {
       });
     });
 
-    console.log("Background set to: url('https://i.postimg.cc/wjD3ZGy0/image.png')");
+    // Background rotation
+    const interval = setInterval(() => {
+      setBackgroundIndex((prev) => {
+        const next = (prev + 1) % backgrounds.length;
+        console.log("Switching to background:", backgrounds[next]); // Debug
+        return next;
+      });
+    }, 8000);
+
+    return () => {
+      clearInterval(interval);
+      tl.kill();
+    };
   }, []);
 
   useEffect(() => {
@@ -94,6 +117,16 @@ export default function Login() {
       );
     }
   }, [error]);
+
+  useEffect(() => {
+    if (showToast) {
+      gsap.fromTo(
+        toastRef.current,
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4 }
+      );
+    }
+  }, [showToast]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -108,28 +141,35 @@ export default function Login() {
     });
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
+      const response = await fetch("http://localhost:8080/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          fullname,
+          role: "USER",
+        }),
         credentials: "include",
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
+        throw new Error(errorData.message || "Registration failed");
       }
 
-      const data = await response.json();
-      login(data.token, username);
+      // Show toast message
+      setShowToast(true);
+      setIsLoading(false);
 
-      if (data.role === "ROLE_ADMIN") {
-        router.push("/Admin/adminDashboard");
-      } else {
-        router.push("/");
-      }
+      // Hide toast after 2 seconds and redirect
+      setTimeout(() => {
+        setShowToast(false);
+        router.push("/login");
+      }, 2000);
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
@@ -151,14 +191,20 @@ export default function Login() {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
-      style={{
-        backgroundImage: "url('https://i.postimg.cc/wjD3ZGy0/image.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Image with Next.js Image component */}
+      <Image
+        src={backgrounds[backgroundIndex]}
+        alt="Background"
+        layout="fill"
+        objectFit="cover"
+        objectPosition="center"
+        priority
+        className="z-0 transition-opacity duration-1000"
+      />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black bg-opacity-20 z-0"></div>
+
       <div className="max-w-md w-full space-y-8 z-10">
         <div className="text-center">
           <div ref={logoRef}>
@@ -181,10 +227,10 @@ export default function Login() {
             ref={titleRef}
             className="mt-6 text-center text-3xl font-extrabold text-white"
           >
-            Welcome to <span className="text-blue-400">Tech Haven</span>
+            Join <span className="text-blue-400">Tech Haven</span>
           </h2>
           <p className="mt-2 text-center text-sm text-gray-300">
-            Your ultimate PC hardware destination
+            Create your account to explore PC hardware
           </p>
         </div>
 
@@ -194,6 +240,15 @@ export default function Login() {
             className="rounded-md bg-red-900 bg-opacity-80 p-4"
           >
             <div className="text-sm text-red-100">{error}</div>
+          </div>
+        )}
+
+        {showToast && (
+          <div
+            ref={toastRef}
+            className="rounded-md bg-green-900 bg-opacity-80 p-4"
+          >
+            <div className="text-sm text-green-100">Registration completed</div>
           </div>
         )}
 
@@ -224,6 +279,26 @@ export default function Login() {
               onMouseEnter={() => addHoverEffect(1)}
               onMouseLeave={() => removeHoverEffect(1)}
             >
+              <label htmlFor="email" className="sr-only">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-700 placeholder-gray-400 text-white bg-gray-800 bg-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div
+              ref={(el) => (inputsRef.current[2] = el)}
+              onMouseEnter={() => addHoverEffect(2)}
+              onMouseLeave={() => removeHoverEffect(2)}
+            >
               <label htmlFor="password" className="sr-only">
                 Password
               </label>
@@ -231,38 +306,32 @@ export default function Login() {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete="new-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-700 placeholder-gray-400 text-white bg-gray-800 bg-opacity-70 rounded-b-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-700 placeholder-gray-400 text-white bg-gray-800 bg-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-gray-800 bg-opacity-70"
-              />
-              <label
-                htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-300"
-              >
-                Remember me
+            <div
+              ref={(el) => (inputsRef.current[3] = el)}
+              onMouseEnter={() => addHoverEffect(3)}
+              onMouseLeave={() => removeHoverEffect(3)}
+            >
+              <label htmlFor="fullname" className="sr-only">
+                Full Name
               </label>
-            </div>
-            <div className="text-sm">
-              <Link
-                href="/forgot-password"
-                className="font-medium text-blue-400 hover:text-blue-300"
-              >
-                Forgot your password?
-              </Link>
+              <input
+                id="fullname"
+                name="fullname"
+                type="text"
+                autoComplete="name"
+                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-700 placeholder-gray-400 text-white bg-gray-800 bg-opacity-70 rounded-b-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
+                placeholder="Full Name"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+              />
             </div>
           </div>
 
@@ -295,7 +364,7 @@ export default function Login() {
                   ></path>
                 </svg>
               ) : (
-                "Sign in"
+                "Sign up"
               )}
             </button>
           </div>
@@ -303,12 +372,12 @@ export default function Login() {
 
         <div ref={footerRef} className="text-center">
           <p className="text-sm text-gray-400">
-            New to Tech Haven?{" "}
+            Already have an account?{" "}
             <Link
-              href="/register"
+              href="/login"
               className="font-medium text-blue-400 hover:text-blue-300 transition-colors duration-300"
             >
-              Create an account
+              Sign in
             </Link>
           </p>
         </div>
@@ -326,7 +395,7 @@ export default function Login() {
               top: `${Math.random() * 100}%`,
             }}
           >
-            {["💻", "🖥️", "⌨️", "🖱️", "🔌", "⚡", "🔧", "� вдоль"][i % 8]}
+            {["💻", "🖥️", "⌨️", "🖱️", "🔌", "⚡", "🔧", "🛠️"][i % 8]}
           </div>
         ))}
       </div>
