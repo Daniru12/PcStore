@@ -195,11 +195,11 @@ export default function Products() {
   }
 
   return (
-    <div className="min-h-screen pt-24 bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900">
+    <div className="min-h-screen pt-14 bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900">
       {/* Top Navigation and Advertisement Slider */}
       <nav className="shadow-lg bg-gradient-to-r from-purple-800 to-indigo-800">
         {/* Advertisement Slider */}
-        <div className="relative w-full h-64 overflow-hidden bg-gradient-to-r from-purple-700 to-indigo-700">
+        <div className="relative w-full overflow-hidden h-80 bg-gradient-to-r from-purple-700 to-indigo-700">
           {ads.map((ad, index) => (
             <div
               key={index}

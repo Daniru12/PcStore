@@ -88,22 +88,7 @@ export default function Header() {
             transition={{ duration: 0.5 }}
             className="items-center hidden space-x-5 md:flex"
           >
-            <button className="transition-colors duration-300 hover:text-blue-400">
-              <SearchIcon size={20} />
-            </button>
-            <button className="transition-colors duration-300 hover:text-blue-400">
-              <UserIcon size={20} />
-            </button>
-
-            {/* Show Cart only on Products Page */}
-            {isProductsPage && (
-              <button className="relative transition-colors duration-300 hover:text-blue-400">
-                <ShoppingCartIcon size={20} />
-                <span className="absolute flex items-center justify-center w-5 h-5 text-xs bg-blue-500 rounded-full -top-2 -right-2">
-                  3
-                </span>
-              </button>
-            )}
+            
 
             {/* Auth buttons or user info */}
             {isLoggedIn ? (
@@ -119,20 +104,23 @@ export default function Header() {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-md hover:bg-blue-700"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 rounded-md hover:bg-green-700"
-                >
-                  Sign Up
-                </Link>
-              </>
+              // Only show login/signup if NOT on products page
+              !isProductsPage && (
+                <>
+                  <Link
+                    href="/login"
+                    className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-md hover:bg-blue-700"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 rounded-md hover:bg-green-700"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )
             )}
           </motion.div>
 
@@ -183,22 +171,7 @@ export default function Header() {
                 Support
               </Link>
 
-              <div className="flex justify-between pt-2">
-                <button className="hover:text-blue-400">
-                  <SearchIcon size={20} />
-                </button>
-                <button className="hover:text-blue-400">
-                  <UserIcon size={20} />
-                </button>
-                {isProductsPage && (
-                  <button className="relative hover:text-blue-400">
-                    <ShoppingCartIcon size={20} />
-                    <span className="absolute flex items-center justify-center w-5 h-5 text-xs bg-blue-500 rounded-full -top-2 -right-2">
-                      3
-                    </span>
-                  </button>
-                )}
-              </div>
+              
 
               <div className="flex flex-col pt-2 space-y-2">
                 {isLoggedIn ? (
@@ -213,20 +186,24 @@ export default function Header() {
                   </>
                 ) : (
                   <>
-                    <Link
-                      href="/login"
-                      className="text-white hover:text-blue-400"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      href="/register"
-                      className="text-white hover:text-blue-400"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Sign Up
-                    </Link>
+                    {!isProductsPage && (
+                      <Link
+                        href="/login"
+                        className="text-white hover:text-blue-400"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Login
+                      </Link>
+                    )}
+                    {!isProductsPage && (
+                      <Link
+                        href="/register"
+                        className="text-white hover:text-blue-400"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Sign Up
+                      </Link>
+                    )}
                   </>
                 )}
               </div>
