@@ -1,12 +1,9 @@
-
 "use client";
-
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useContext } from "react";
 import { AuthContext } from "../component/AuthContext";
-import gsap from "gsap";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -16,96 +13,10 @@ export default function Login() {
   const router = useRouter();
   const { login } = useContext(AuthContext);
 
-  // Refs for GSAP animations
-  const formRef = useRef(null);
-  const logoRef = useRef(null);
-  const titleRef = useRef(null);
-  const errorRef = useRef(null);
-  const inputsRef = useRef([]);
-  const buttonRef = useRef(null);
-  const footerRef = useRef(null);
-  const floatersRef = useRef([]);
-
-  useEffect(() => {
-    // Initialize animations
-    const tl = gsap.timeline();
-
-    tl.from(logoRef.current, {
-      scale: 0.8,
-      opacity: 0,
-      duration: 0.6,
-      ease: "back.out(1.7)",
-    });
-
-    tl.from(titleRef.current, {
-      y: 20,
-      opacity: 0,
-      duration: 0.5,
-    }, "-=0.3");
-
-    tl.from(formRef.current, {
-      y: 30,
-      opacity: 0,
-      duration: 0.6,
-      ease: "power2.out",
-    }, "-=0.2");
-
-    tl.from(inputsRef.current, {
-      y: 20,
-      opacity: 0,
-      stagger: 0.1,
-      duration: 0.4,
-    }, "-=0.3");
-
-    tl.from(buttonRef.current, {
-      y: 20,
-      opacity: 0,
-      duration: 0.4,
-    }, "-=0.2");
-
-    tl.from(footerRef.current, {
-      y: 20,
-      opacity: 0,
-      duration: 0.4,
-    }, "-=0.1");
-
-    floatersRef.current.forEach((floater, i) => {
-      gsap.to(floater, {
-        y: gsap.utils.random(-20, 20),
-        x: gsap.utils.random(-20, 20),
-        rotation: gsap.utils.random(-180, 180),
-        duration: gsap.utils.random(8, 12),
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: i * 0.2,
-      });
-    });
-
-    console.log("Background set to: url('https://i.postimg.cc/wjD3ZGy0/image.png')");
-  }, []);
-
-  useEffect(() => {
-    if (error) {
-      gsap.fromTo(
-        errorRef.current,
-        { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.4 }
-      );
-    }
-  }, [error]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-
-    gsap.to(buttonRef.current, {
-      scale: 0.98,
-      duration: 0.1,
-      yoyo: true,
-      repeat: 1,
-    });
 
     try {
       const response = await fetch("http://localhost:8080/api/auth/login", {
@@ -136,51 +47,32 @@ export default function Login() {
     }
   };
 
-  const addHoverEffect = (index) => {
-    gsap.to(inputsRef.current[index], {
-      scale: 1.01,
-      duration: 0.2,
-    });
-  };
-
-  const removeHoverEffect = (index) => {
-    gsap.to(inputsRef.current[index], {
-      scale: 1,
-      duration: 0.2,
-    });
-  };
-
   return (
     <div
-      className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
       style={{
-        backgroundImage: "url('https://i.postimg.cc/wjD3ZGy0/image.png')",
+        backgroundImage: "url('https://i.postimg.cc/wjD3ZGy0/image.png ')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="max-w-md w-full space-y-8 z-10">
+      <div className="max-w-md w-full space-y-8 bg-gray-900 bg-opacity-80 p-8 rounded-lg shadow-lg">
         <div className="text-center">
-          <div ref={logoRef}>
-            <svg
-              className="mx-auto h-16 w-16 text-blue-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-              ></path>
-            </svg>
-          </div>
-          <h2
-            ref={titleRef}
-            className="mt-6 text-center text-3xl font-extrabold text-white"
+          <svg
+            className="mx-auto h-16 w-16 text-blue-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+            ></path>
+          </svg>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
             Welcome to <span className="text-blue-400">Tech Haven</span>
           </h2>
           <p className="mt-2 text-center text-sm text-gray-300">
@@ -189,21 +81,14 @@ export default function Login() {
         </div>
 
         {error && (
-          <div
-            ref={errorRef}
-            className="rounded-md bg-red-900 bg-opacity-80 p-4"
-          >
+          <div className="rounded-md bg-red-900 bg-opacity-80 p-4">
             <div className="text-sm text-red-100">{error}</div>
           </div>
         )}
 
-        <form ref={formRef} className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
-            <div
-              ref={(el) => (inputsRef.current[0] = el)}
-              onMouseEnter={() => addHoverEffect(0)}
-              onMouseLeave={() => removeHoverEffect(0)}
-            >
+            <div>
               <label htmlFor="username" className="sr-only">
                 Username
               </label>
@@ -219,11 +104,7 @@ export default function Login() {
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
-            <div
-              ref={(el) => (inputsRef.current[1] = el)}
-              onMouseEnter={() => addHoverEffect(1)}
-              onMouseLeave={() => removeHoverEffect(1)}
-            >
+            <div>
               <label htmlFor="password" className="sr-only">
                 Password
               </label>
@@ -268,7 +149,6 @@ export default function Login() {
 
           <div>
             <button
-              ref={buttonRef}
               type="submit"
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300"
               disabled={isLoading}
@@ -301,7 +181,7 @@ export default function Login() {
           </div>
         </form>
 
-        <div ref={footerRef} className="text-center">
+        <div className="text-center">
           <p className="text-sm text-gray-400">
             New to Tech Haven?{" "}
             <Link
@@ -312,23 +192,6 @@ export default function Login() {
             </Link>
           </p>
         </div>
-      </div>
-
-      <div className="absolute inset-0 overflow-hidden z-0">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            ref={(el) => (floatersRef.current[i] = el)}
-            className="absolute text-gray-600 opacity-20"
-            style={{
-              fontSize: `${Math.random() * 20 + 10}px`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-          >
-            {["💻", "🖥️", "⌨️", "🖱️", "🔌", "⚡", "🔧", "� вдоль"][i % 8]}
-          </div>
-        ))}
       </div>
     </div>
   );
