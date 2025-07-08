@@ -2,12 +2,14 @@
 "use client";
 
 import React, { createContext, useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -31,6 +33,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("username");
     setIsLoggedIn(false);
     setUsername("");
+    // Redirect to login page after logout
+    router.push('/login');
   };
 
   return (
