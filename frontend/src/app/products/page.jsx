@@ -180,26 +180,26 @@ export default function Products() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-purple-500"></div>
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900">
+        <div className="w-12 h-12 border-t-4 border-purple-500 rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center text-red-500 bg-red-50 p-4 rounded-lg">
+      <div className="p-4 text-center text-red-500 rounded-lg bg-red-50">
         Error loading products: {error}
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900">
+    <div className="min-h-screen pt-14 bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900">
       {/* Top Navigation and Advertisement Slider */}
-      <nav className="bg-gradient-to-r from-purple-800 to-indigo-800 shadow-lg">
+      <nav className="shadow-lg bg-gradient-to-r from-purple-800 to-indigo-800">
         {/* Advertisement Slider */}
-        <div className="relative w-full h-64 overflow-hidden bg-gradient-to-r from-purple-700 to-indigo-700">
+        <div className="relative w-full overflow-hidden h-80 bg-gradient-to-r from-purple-700 to-indigo-700">
           {ads.map((ad, index) => (
             <div
               key={index}
@@ -210,27 +210,27 @@ export default function Products() {
               <img
                 src={ad.image}
                 alt={`Advertisement ${index + 1}`}
-                className="w-full h-full object-cover"
+                className="object-cover w-full h-full"
               />
             </div>
           ))}
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-purple-600 text-white p-2 rounded-full hover:bg-purple-700 transition-colors"
+            className="absolute p-2 text-white transition-colors transform -translate-y-1/2 bg-purple-600 rounded-full left-4 top-1/2 hover:bg-purple-700"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-purple-600 text-white p-2 rounded-full hover:bg-purple-700 transition-colors"
+            className="absolute p-2 text-white transition-colors transform -translate-y-1/2 bg-purple-600 rounded-full right-4 top-1/2 hover:bg-purple-700"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          <div className="absolute flex space-x-2 transform -translate-x-1/2 bottom-4 left-1/2">
             {ads.map((_, index) => (
               <button
                 key={index}
@@ -249,21 +249,21 @@ export default function Products() {
         onClick={() => setIsCartOpen(true)}
         className="fixed top-1.5 right-4 z-50 flex items-center bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition-all duration-300 shadow-lg"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h- w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 mr-2 h-" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
         <span>Cart</span>
         {cartCount > 0 && (
-          <span className="ml-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+          <span className="flex items-center justify-center w-6 h-6 ml-2 text-xs text-white bg-red-500 rounded-full">
             {cartCount}
           </span>
         )}
       </button>
 
       {/* Search and Filter Section */}
-      <div className="container mx-auto p-6">
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 shadow-xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="container p-6 mx-auto">
+        <div className="p-6 mb-8 shadow-xl bg-white/10 backdrop-blur-md rounded-2xl">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {/* Search Bar */}
             <div className="relative">
               <input
@@ -271,7 +271,7 @@ export default function Products() {
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 pl-10 rounded-lg bg-white/20 backdrop-blur-md text-white placeholder-gray-300 border border-white/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
+                className="w-full px-4 py-2 pl-10 text-white placeholder-gray-300 border rounded-lg bg-white/20 backdrop-blur-md border-white/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
               />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -287,7 +287,7 @@ export default function Products() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 rounded-lg bg-white/20 backdrop-blur-md text-white border border-white/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
+              className="px-4 py-2 text-white border rounded-lg bg-white/20 backdrop-blur-md border-white/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
             >
               <option value="all" className="text-gray-800">All Categories</option>
               {categories.map((category) => (
@@ -303,21 +303,21 @@ export default function Products() {
                 placeholder="Min Price"
                 value={priceRange.min}
                 onChange={(e) => setPriceRange({ ...priceRange, min: parseFloat(e.target.value) || 0 })}
-                className="w-1/2 px-3 py-2 rounded-lg bg-white/20 backdrop-blur-md text-white placeholder-gray-300 border border-white/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
+                className="w-1/2 px-3 py-2 text-white placeholder-gray-300 border rounded-lg bg-white/20 backdrop-blur-md border-white/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
               />
               <input
                 type="number"
                 placeholder="Max Price"
                 value={priceRange.max}
                 onChange={(e) => setPriceRange({ ...priceRange, max: parseFloat(e.target.value) || 100000 })}
-                className="w-1/2 px-3 py-2 rounded-lg bg-white/20 backdrop-blur-md text-white placeholder-gray-300 border border-white/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
+                className="w-1/2 px-3 py-2 text-white placeholder-gray-300 border rounded-lg bg-white/20 backdrop-blur-md border-white/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
               />
             </div>
             {/* Sort By */}
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 rounded-lg bg-white/20 backdrop-blur-md text-white border border-white/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
+              className="px-4 py-2 text-white border rounded-lg bg-white/20 backdrop-blur-md border-white/30 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-300"
             >
               <option value="name" className="text-gray-800">Sort by Name</option>
               <option value="price-low" className="text-gray-800">Price: Low to High</option>
@@ -325,13 +325,13 @@ export default function Products() {
             </select>
           </div>
           {/* Filter Results and Clear Button */}
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex items-center justify-between mt-4">
             <span className="text-white">
               Showing {filteredProducts.length} of {products.length} products
             </span>
             <button
               onClick={clearFilters}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="px-4 py-2 text-white transition-colors bg-purple-600 rounded-lg hover:bg-purple-700"
             >
               Clear Filters
             </button>
@@ -339,36 +339,36 @@ export default function Products() {
         </div>
 
         {/* Products Grid */}
-        <h1 className="text-4xl font-extrabold text-center mb-12 text-white">
+        <h1 className="mb-12 text-4xl font-extrabold text-center text-white">
           Our Products
         </h1>
         {filteredProducts.length === 0 ? (
-          <div className="text-center text-white text-xl">
+          <div className="text-xl text-center text-white">
             No products found matching your criteria.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 relative border border-white/20"
+                className="relative overflow-hidden transition-transform duration-300 transform border shadow-lg bg-white/10 backdrop-blur-md rounded-xl hover:scale-105 border-white/20"
               >
                 <div className="relative">
                   <img
                     src={product.imageUrl || "/placeholder-image.png"}
                     alt={product.name}
-                    className="w-full h-56 object-cover"
+                    className="object-cover w-full h-56"
                   />
                   {product.stock <= 0 && (
-                    <div className="absolute inset-0 bg-gray-600/70 backdrop-blur-md flex items-center justify-center">
-                      <span className="text-red-500 text-lg font-bold">Out of Stock</span>
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-600/70 backdrop-blur-md">
+                      <span className="text-lg font-bold text-red-500">Out of Stock</span>
                     </div>
                   )}
                 </div>
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold text-white mb-2">{product.name}</h2>
-                  <p className="text-gray-300 text-sm mb-4 line-clamp-2">{product.description}</p>
-                  <div className="flex justify-between items-center mb-4">
+                  <h2 className="mb-2 text-xl font-semibold text-white">{product.name}</h2>
+                  <p className="mb-4 text-sm text-gray-300 line-clamp-2">{product.description}</p>
+                  <div className="flex items-center justify-between mb-4">
                     <span className="text-lg font-bold text-purple-300">
                       ${product.price.toFixed(2)}
                     </span>
@@ -379,7 +379,7 @@ export default function Products() {
                   <div className="flex space-x-2">
                     <button
                       onClick={() => router.push(`/products/${product.id}`)}
-                      className="flex-1 py-2 px-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
+                      className="flex-1 px-3 py-2 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-700"
                     >
                       View Details
                     </button>
@@ -404,28 +404,28 @@ export default function Products() {
 
       {/* Cart Modal */}
       {isCartOpen && (
-        <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-sm">
           <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-y-auto relative">
             <button
               onClick={() => setIsCartOpen(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+              className="absolute text-gray-500 transition-colors top-4 right-4 hover:text-gray-700"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <h2 className="text-3xl font-bold mb-6 text-gray-800">Your Cart</h2>
+            <h2 className="mb-6 text-3xl font-bold text-gray-800">Your Cart</h2>
             {cart.length === 0 ? (
-              <p className="text-gray-500 text-center">Your cart is empty.</p>
+              <p className="text-center text-gray-500">Your cart is empty.</p>
             ) : (
               <>
                 {cart.map((item) => (
-                  <div key={item.id} className="mb-6 border-b pb-4">
+                  <div key={item.id} className="pb-4 mb-6 border-b">
                     <div className="flex items-center">
                       <img
                         src={item.imageUrl || "/placeholder-image.png"}
                         alt={item.name}
-                        className="w-20 h-20 object-cover rounded-lg mr-4"
+                        className="object-cover w-20 h-20 mr-4 rounded-lg"
                       />
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
@@ -436,7 +436,7 @@ export default function Products() {
                       </div>
                       <button
                         onClick={() => removeFromCart(item.id)}
-                        className="text-red-500 hover:text-red-700 transition-colors"
+                        className="text-red-500 transition-colors hover:text-red-700"
                       >
                         Remove
                       </button>
@@ -444,7 +444,7 @@ export default function Products() {
                     <div className="flex items-center mt-3 space-x-2">
                       <button
                         onClick={() => updateQuantity(item.id, -1)}
-                        className="bg-gray-200 text-gray-700 px-3 py-1 rounded-l-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
+                        className="px-3 py-1 text-gray-700 transition-colors bg-gray-200 rounded-l-lg hover:bg-gray-300 disabled:opacity-50"
                         disabled={item.quantity <= 1}
                       >
                         -
@@ -452,7 +452,7 @@ export default function Products() {
                       <span className="px-4 py-1 bg-gray-100 border rounded">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.id, 1)}
-                        className="bg-gray-200 text-gray-700 px-3 py-1 rounded-r-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
+                        className="px-3 py-1 text-gray-700 transition-colors bg-gray-200 rounded-r-lg hover:bg-gray-300 disabled:opacity-50"
                         disabled={item.quantity >= item.stock}
                       >
                         +
@@ -467,7 +467,7 @@ export default function Products() {
                 </div>
                 <button
                   onClick={handlePlaceOrder}
-                  className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors mt-6 font-semibold"
+                  className="w-full py-3 mt-6 font-semibold text-white transition-colors bg-purple-600 rounded-lg hover:bg-purple-700"
                 >
                   Place Order
                 </button>

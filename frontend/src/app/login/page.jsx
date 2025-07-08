@@ -49,17 +49,17 @@ export default function Login() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+      className="flex items-center justify-center min-h-screen px-4 py-12 pt-16 sm:px-6 lg:px-8"
       style={{
-        backgroundImage: "url('https://i.postimg.cc/wjD3ZGy0/image.png ')",
+        backgroundImage: "url('https://i.postimg.cc/28MxMY9b/image.png ')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="max-w-md w-full space-y-8 bg-gray-900 bg-opacity-80 p-8 rounded-lg shadow-lg">
+      <div className="w-full max-w-md p-8 space-y-8 bg-gray-900 rounded-lg shadow-lg bg-opacity-80">
         <div className="text-center">
           <svg
-            className="mx-auto h-16 w-16 text-blue-400"
+            className="w-16 h-16 mx-auto text-blue-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -72,22 +72,22 @@ export default function Login() {
               d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
             ></path>
           </svg>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+          <h2 className="mt-6 text-3xl font-extrabold text-center text-white">
             Welcome to <span className="text-blue-400">Tech Haven</span>
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-300">
+          <p className="mt-2 text-sm text-center text-gray-300">
             Your ultimate PC hardware destination
           </p>
         </div>
 
         {error && (
-          <div className="rounded-md bg-red-900 bg-opacity-80 p-4">
+          <div className="p-4 bg-red-900 rounded-md bg-opacity-80">
             <div className="text-sm text-red-100">{error}</div>
           </div>
         )}
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="-space-y-px rounded-md shadow-sm">
             <div>
               <label htmlFor="username" className="sr-only">
                 Username
@@ -98,7 +98,7 @@ export default function Login() {
                 type="text"
                 autoComplete="username"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-700 placeholder-gray-400 text-white bg-gray-800 bg-opacity-70 rounded-t-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
+                className="relative block w-full px-3 py-3 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-none appearance-none bg-opacity-70 rounded-t-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -114,7 +114,7 @@ export default function Login() {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-700 placeholder-gray-400 text-white bg-gray-800 bg-opacity-70 rounded-b-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
+                className="relative block w-full px-3 py-3 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-none appearance-none bg-opacity-70 rounded-b-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -128,11 +128,11 @@ export default function Login() {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-gray-800 bg-opacity-70"
+                className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-700 rounded focus:ring-blue-500 bg-opacity-70"
               />
               <label
                 htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-300"
+                className="block ml-2 text-sm text-gray-300"
               >
                 Remember me
               </label>
@@ -150,12 +150,12 @@ export default function Login() {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300"
+              className="relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white transition-colors duration-300 bg-blue-600 border border-transparent rounded-md group hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               disabled={isLoading}
             >
               {isLoading ? (
                 <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  className="w-5 h-5 mr-3 -ml-1 text-white animate-spin"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -186,7 +186,7 @@ export default function Login() {
             New to Tech Haven?{" "}
             <Link
               href="/register"
-              className="font-medium text-blue-400 hover:text-blue-300 transition-colors duration-300"
+              className="font-medium text-blue-400 transition-colors duration-300 hover:text-blue-300"
             >
               Create an account
             </Link>

@@ -1,113 +1,216 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { useContext } from "react";
-import { usePathname } from "next/navigation";
-import { AuthContext } from "./AuthContext";
+import Link from 'next/link'
+import React, { useContext } from 'react'
+import { usePathname } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { AuthContext } from './AuthContext'
+
+// Icons
+import {
+  ShoppingCartIcon,
+  MenuIcon,
+  XIcon,
+  SearchIcon,
+  UserIcon,
+} from 'lucide-react'
 
 export default function Header() {
-  const { isLoggedIn, username, logout } = useContext(AuthContext);
-  const pathname = usePathname();
+  const { isLoggedIn, username, logout } = useContext(AuthContext)
+  const pathname = usePathname()
 
-  const isHomePage = pathname === "/";
-  const isAdminPage = pathname.startsWith("/Admin");
+  const isHomePage = pathname === '/'
+  const isProductsPage = pathname === '/products'
+  const isAdminPage = pathname.startsWith('/Admin')
 
-  if (isAdminPage) {
-    return null; // Hide header on admin pages
-  }
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+
+  // Don't render header on admin pages
+  if (isAdminPage) return null
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white shadow-md">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-gray-900">
-            TechBuild<span className="text-blue-600">PC</span>
-          </span>
-        </Link>
+    <header className="fixed top-0 left-0 z-50 w-full text-white transition-all duration-300 bg-black/80 backdrop-blur-md">
+      <div className="container px-4 py-3 mx-auto">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center"
+          >
+            <Link href="/" className="text-2xl font-bold text-blue-500">
+              TechBuild<span className="text-white">PC</span>
+            </Link>
+          </motion.div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-            Home
-          </Link>
-          <Link href="/build" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-            Build PC
-          </Link>
-          <Link href="/products" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-            Products
-          </Link>
-          <Link href="/support" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-            Support
-          </Link>
-        </nav>
+          {/* Desktop Navigation */}
+          <motion.nav
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="hidden space-x-8 md:flex"
+          >
+            <Link
+              href="/"
+              className="relative text-white transition-colors duration-300 hover:text-blue-400 group"
+            >
+              Home
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            <Link
+              href="/build"
+              className="relative text-white transition-colors duration-300 hover:text-blue-400 group"
+            >
+              Build PC
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            <Link
+              href="/products"
+              className="relative text-white transition-colors duration-300 hover:text-blue-400 group"
+            >
+              Products
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            <Link
+              href="/support"
+              className="relative text-white transition-colors duration-300 hover:text-blue-400 group"
+            >
+              Support
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+          </motion.nav>
 
-        {/* Auth Buttons / Username / Cart Icon */}
-        <div className="hidden md:flex items-center space-x-4">
-          {isLoggedIn ? (
-            <>
-              <span className="text-sm font-medium text-gray-700">Hello, {username}</span>
-              <button
-                onClick={logout}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-              >
-                Logout
-              </button>
-              {!isHomePage && ( // Conditionally render cart icon when not on home page
-                <Link href="/AddToCart" className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+          {/* Right Side Icons & Auth Buttons */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="items-center hidden space-x-5 md:flex"
+          >
+            
+
+            {/* Auth buttons or user info */}
+            {isLoggedIn ? (
+              <>
+                <span className="ml-4 text-sm font-medium text-white">
+                  Hello, {username}
+                </span>
+                <button
+                  onClick={logout}
+                  className="px-4 py-2 text-sm font-medium text-white transition-colors bg-red-600 rounded-md hover:bg-red-700"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              // Only show login/signup if NOT on products page
+              !isProductsPage && (
+                <>
+                  <Link
+                    href="/login"
+                    className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-md hover:bg-blue-700"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                </Link>
-              )}
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="flex items-center px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="px-4 py-2 text-sm font-medium text-white transition-colors bg-green-600 rounded-md hover:bg-green-700"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )
+            )}
+          </motion.div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="text-white md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
+          </button>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button className="md:hidden text-gray-700 focus:outline-none">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="pb-4 mt-2 md:hidden bg-gray-900/95 backdrop-blur-md"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
+            <nav className="flex flex-col px-4 space-y-4">
+              <Link
+                href="/"
+                className="py-2 text-white border-b border-gray-800 hover:text-blue-400"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                href="/build"
+                className="py-2 text-white border-b border-gray-800 hover:text-blue-400"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Build PC
+              </Link>
+              <Link
+                href="/products"
+                className="py-2 text-white border-b border-gray-800 hover:text-blue-400"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Products
+              </Link>
+              <Link
+                href="/support"
+                className="py-2 text-white border-b border-gray-800 hover:text-blue-400"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Support
+              </Link>
+
+              
+
+              <div className="flex flex-col pt-2 space-y-2">
+                {isLoggedIn ? (
+                  <>
+                    <span>{username}</span>
+                    <button
+                      onClick={logout}
+                      className="text-left text-white hover:text-red-400"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {!isProductsPage && (
+                      <Link
+                        href="/login"
+                        className="text-white hover:text-blue-400"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Login
+                      </Link>
+                    )}
+                    {!isProductsPage && (
+                      <Link
+                        href="/register"
+                        className="text-white hover:text-blue-400"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Sign Up
+                      </Link>
+                    )}
+                  </>
+                )}
+              </div>
+            </nav>
+          </motion.div>
+        )}
       </div>
     </header>
-  );
+  )
 }

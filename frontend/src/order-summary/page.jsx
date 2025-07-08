@@ -26,8 +26,8 @@ export default function OrderSummaryPage() {
 
   if (!order) {
     return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <h2 className="text-2xl font-bold mb-4">No order found</h2>
+      <div className="container px-4 py-8 mx-auto text-center">
+        <h2 className="mb-4 text-2xl font-bold">No order found</h2>
         <a href="/products" className="text-blue-600 hover:underline">
           ← Back to Products
         </a>
@@ -53,18 +53,18 @@ export default function OrderSummaryPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="container max-w-2xl px-4 py-8 pt-16 mx-auto ">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-        <div className="text-center border-b pb-6 mb-6">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">INVOICE</h1>
-          <div className="w-16 h-1 bg-blue-600 mx-auto"></div>
+      <div className="p-8 mb-6 bg-white rounded-lg shadow-lg">
+        <div className="pb-6 mb-6 text-center border-b">
+          <h1 className="mb-2 text-4xl font-bold text-gray-800">INVOICE</h1>
+          <div className="w-16 h-1 mx-auto bg-blue-600"></div>
         </div>
 
         {/* Order Details */}
         <div className="grid grid-cols-2 gap-8 mb-8">
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-3">Order Details</h3>
+            <h3 className="mb-3 text-lg font-semibold text-gray-700">Order Details</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Order Number:</span>
@@ -86,7 +86,7 @@ export default function OrderSummaryPage() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-3">Bill To</h3>
+            <h3 className="mb-3 text-lg font-semibold text-gray-700">Bill To</h3>
             <div className="text-sm text-gray-600">
               <p className="font-medium">John Doe</p>
               <p>123 Main Street</p>
@@ -97,37 +97,37 @@ export default function OrderSummaryPage() {
         </div>
 
         {/* Order Status */}
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+        <div className="p-4 mb-6 border border-green-200 rounded-lg bg-green-50">
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-            <span className="text-green-800 font-semibold">Order Confirmed</span>
+            <div className="w-3 h-3 mr-3 bg-green-500 rounded-full"></div>
+            <span className="font-semibold text-green-800">Order Confirmed</span>
           </div>
-          <p className="text-green-700 text-sm mt-1">Thank you for your purchase! Your order has been successfully processed.</p>
+          <p className="mt-1 text-sm text-green-700">Thank you for your purchase! Your order has been successfully processed.</p>
         </div>
 
         {/* Items Table */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4">Order Items</h3>
+          <h3 className="mb-4 text-lg font-semibold text-gray-700">Order Items</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-gray-200">
-                  <th className="text-left py-3 px-2 text-sm font-semibold text-gray-700">Item</th>
-                  <th className="text-center py-3 px-2 text-sm font-semibold text-gray-700">Qty</th>
-                  <th className="text-right py-3 px-2 text-sm font-semibold text-gray-700">Unit Price</th>
-                  <th className="text-right py-3 px-2 text-sm font-semibold text-gray-700">Total</th>
+                  <th className="px-2 py-3 text-sm font-semibold text-left text-gray-700">Item</th>
+                  <th className="px-2 py-3 text-sm font-semibold text-center text-gray-700">Qty</th>
+                  <th className="px-2 py-3 text-sm font-semibold text-right text-gray-700">Unit Price</th>
+                  <th className="px-2 py-3 text-sm font-semibold text-right text-gray-700">Total</th>
                 </tr>
               </thead>
               <tbody>
                 {order.map((item, index) => (
                   <tr key={item.id} className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                    <td className="py-4 px-2">
+                    <td className="px-2 py-4">
                       <div className="font-medium text-gray-900">{item.name}</div>
                       <div className="text-sm text-gray-500">SKU: {item.id.toString().padStart(6, '0')}</div>
                     </td>
-                    <td className="py-4 px-2 text-center text-gray-700">{item.quantity}</td>
-                    <td className="py-4 px-2 text-right text-gray-700">${item.price.toFixed(2)}</td>
-                    <td className="py-4 px-2 text-right font-medium text-gray-900">
+                    <td className="px-2 py-4 text-center text-gray-700">{item.quantity}</td>
+                    <td className="px-2 py-4 text-right text-gray-700">${item.price.toFixed(2)}</td>
+                    <td className="px-2 py-4 font-medium text-right text-gray-900">
                       ${(item.price * item.quantity).toFixed(2)}
                     </td>
                   </tr>
@@ -138,7 +138,7 @@ export default function OrderSummaryPage() {
         </div>
 
         {/* Totals */}
-        <div className="border-t-2 border-gray-200 pt-4">
+        <div className="pt-4 border-t-2 border-gray-200">
           <div className="space-y-2">
             <div className="flex justify-between text-gray-700">
               <span>Subtotal:</span>
@@ -152,7 +152,7 @@ export default function OrderSummaryPage() {
               <span>Shipping:</span>
               <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
             </div>
-            <div className="border-t border-gray-300 pt-2 mt-4">
+            <div className="pt-2 mt-4 border-t border-gray-300">
               <div className="flex justify-between text-xl font-bold text-gray-900">
                 <span>Total:</span>
                 <span>${total.toFixed(2)}</span>
@@ -162,15 +162,15 @@ export default function OrderSummaryPage() {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-600">
+        <div className="pt-6 mt-8 border-t border-gray-200">
+          <div className="grid grid-cols-1 gap-6 text-sm text-gray-600 md:grid-cols-2">
             <div>
-              <h4 className="font-semibold text-gray-800 mb-2">Shipping Information</h4>
+              <h4 className="mb-2 font-semibold text-gray-800">Shipping Information</h4>
               <p>Estimated delivery: 3-5 business days</p>
               <p>Tracking number will be sent via email</p>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-800 mb-2">Return Policy</h4>
+              <h4 className="mb-2 font-semibold text-gray-800">Return Policy</h4>
               <p>30-day return policy</p>
               <p>Items must be in original condition</p>
             </div>
@@ -178,16 +178,16 @@ export default function OrderSummaryPage() {
         </div>
 
         {/* Actions */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+        <div className="flex flex-col justify-center gap-4 mt-8 sm:flex-row">
+          <button className="px-6 py-3 font-medium text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700">
             Print Invoice
           </button>
-          <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+          <button className="px-6 py-3 font-medium text-gray-700 transition-colors border border-gray-300 rounded-lg hover:bg-gray-50">
             Download PDF
           </button>
           <a 
             href="/products" 
-            className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors text-center inline-block"
+            className="inline-block px-6 py-3 font-medium text-center text-gray-700 transition-colors border border-gray-300 rounded-lg hover:bg-gray-50"
           >
             Continue Shopping
           </a>
@@ -195,8 +195,8 @@ export default function OrderSummaryPage() {
       </div>
 
       {/* Additional Information */}
-      <div className="bg-gray-50 rounded-lg p-6 text-center">
-        <p className="text-gray-600 mb-2">Questions about your order?</p>
+      <div className="p-6 text-center rounded-lg bg-gray-50">
+        <p className="mb-2 text-gray-600">Questions about your order?</p>
         <p className="text-sm text-gray-500">
           Contact us at <span className="text-blue-600">support@example.com</span> or call <span className="text-blue-600">(555) 123-4567</span>
         </p>

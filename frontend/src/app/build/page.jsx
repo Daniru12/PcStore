@@ -59,11 +59,11 @@ export default function build() {
   };
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen p-6">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
+    <div className="min-h-screen p-6 pt-24 text-white bg-gray-900">
+      <div className="flex flex-col gap-8 mx-auto max-w-7xl md:flex-row">
         {/* Sidebar */}
-        <div className="md:w-1/4 bg-gray-800 p-6 rounded-lg">
-          <h2 className="text-xl font-bold mb-4">PRICE RANGE</h2>
+        <div className="p-6 bg-gray-800 rounded-lg md:w-1/4">
+          <h2 className="mb-4 text-xl font-bold">PRICE RANGE</h2>
           <input
             type="range"
             min="15500"
@@ -72,9 +72,9 @@ export default function build() {
             onChange={(e) => setPriceRange([15500, parseInt(e.target.value)])}
             className="w-full accent-yellow-400"
           />
-          <p className="text-sm mt-2">{`${priceRange[0]} LKR - ${priceRange[1]} LKR`}</p>
+          <p className="mt-2 text-sm">{`${priceRange[0]} LKR - ${priceRange[1]} LKR`}</p>
 
-          <h2 className="text-xl font-bold mt-6 mb-4">AVAILABILITY</h2>
+          <h2 className="mt-6 mb-4 text-xl font-bold">AVAILABILITY</h2>
           {["Out of Stock", "In Stock", "Coming Soon", "Pre-order"].map((status) => (
             <label key={status} className="block">
               <input
@@ -87,7 +87,7 @@ export default function build() {
             </label>
           ))}
 
-          <h2 className="text-xl font-bold mt-6 mb-4">GRAPHICS TABLET BRAND</h2>
+          <h2 className="mt-6 mb-4 text-xl font-bold">GRAPHICS TABLET BRAND</h2>
           {["HUION", "XP-PEN"].map((brand) => (
             <label key={brand} className="block">
               <input
@@ -100,7 +100,7 @@ export default function build() {
             </label>
           ))}
 
-          <h2 className="text-xl font-bold mt-6 mb-4">GRAPHICS TABLET TYPE</h2>
+          <h2 className="mt-6 mb-4 text-xl font-bold">GRAPHICS TABLET TYPE</h2>
           {["Pen Tablet"].map((type) => (
             <label key={type} className="block">
               <input
@@ -115,13 +115,13 @@ export default function build() {
         </div>
 
         {/* Products Grid */}
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid flex-1 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredProducts.map((product) => (
-            <div key={product.id} className="bg-gray-800 border border-yellow-400 rounded-lg overflow-hidden shadow-md hover:scale-105 transition-transform duration-300">
-              <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+            <div key={product.id} className="overflow-hidden transition-transform duration-300 bg-gray-800 border border-yellow-400 rounded-lg shadow-md hover:scale-105">
+              <img src={product.image} alt={product.name} className="object-cover w-full h-48" />
               <div className="p-4 text-center">
-                <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                <p className="text-yellow-400 font-bold text-xl mb-2">{product.price} LKR</p>
+                <h3 className="mb-2 text-lg font-semibold">{product.name}</h3>
+                <p className="mb-2 text-xl font-bold text-yellow-400">{product.price} LKR</p>
                 <button
                   className={`px-4 py-1 rounded-full text-sm ${
                     product.stockStatus === "In Stock"
