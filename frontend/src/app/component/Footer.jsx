@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation"; // Import usePathname
 import {
   Facebook,
   Twitter,
@@ -11,6 +12,13 @@ import {
 } from "lucide-react";
 
 const Footer = () => {
+  const pathname = usePathname();
+  const isAdminPage = pathname.startsWith("/Admin");
+
+  if (isAdminPage) {
+    return null; // Hide footer on admin pages
+  }
+
   return (
     <footer className="bg-gray-900 text-gray-300 w-full">
       <div className="container mx-auto px-4 py-12">

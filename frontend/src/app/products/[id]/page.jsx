@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function ProductDetail({ params }) {
-  const { id } = React.use(params);
+  const { id } = params;
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);

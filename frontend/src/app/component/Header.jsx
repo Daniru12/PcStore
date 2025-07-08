@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { AuthContext } from './AuthContext'
@@ -20,30 +20,17 @@ export default function Header() {
   const pathname = usePathname()
 
   const isHomePage = pathname === '/'
-  const isProductsPage = pathname === '/products' // Only show cart on products page
+  const isProductsPage = pathname === '/products'
+  const isAdminPage = pathname.startsWith('/Admin')
 
-  const [scrolled, setScrolled] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
+  // Don't render header on admin pages
+  if (isAdminPage) return null
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? 'bg-black/80 backdrop-blur-md py-3' : 'bg-transparent py-5'
-      }`}
-    >
-      <div className="container px-4 mx-auto">
+    <header className="fixed top-0 left-0 z-50 w-full text-white transition-all duration-300 bg-black/80 backdrop-blur-md">
+      <div className="container px-4 py-3 mx-auto">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <motion.div
@@ -119,21 +106,20 @@ export default function Header() {
             )}
 
             {/* Auth buttons or user info */}
-            {isLoggedIn && isHomePage && (
-              <span className="ml-4 text-sm font-medium text-white">
-                Hello, {username}
-              </span>
-            )}
-            {isLoggedIn && !isHomePage && !isProductsPage && (
-              <button
-                onClick={logout}
-                className="px-4 py-2 text-sm font-medium text-white transition-colors bg-red-600 rounded-md hover:bg-red-700"
-              >
-                Logout
-              </button>
-            )}
-            {!isLoggedIn && !isProductsPage && (
-              <div className="flex space-x-2">
+            {isLoggedIn ? (
+              <>
+                <span className="ml-4 text-sm font-medium text-white">
+                  Hello, {username}
+                </span>
+                <button
+                  onClick={logout}
+                  className="px-4 py-2 text-sm font-medium text-white transition-colors bg-red-600 rounded-md hover:bg-red-700"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
                 <Link
                   href="/login"
                   className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-md hover:bg-blue-700"
@@ -146,7 +132,7 @@ export default function Header() {
                 >
                   Sign Up
                 </Link>
-              </div>
+              </>
             )}
           </motion.div>
 
@@ -165,88 +151,86 @@ export default function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-2 md:hidden bg-gray-900/95 backdrop-blur-md"
+            className="pb-4 mt-2 md:hidden bg-gray-900/95 backdrop-blur-md"
           >
-            <div className="container px-4 py-4 mx-auto">
-              <nav className="flex flex-col space-y-4">
-                <Link
-                  href="/"
-                  className="py-2 text-white transition-colors duration-300 border-b border-gray-800 hover:text-blue-400"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/build"
-                  className="py-2 text-white transition-colors duration-300 border-b border-gray-800 hover:text-blue-400"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Build PC
-                </Link>
-                <Link
-                  href="/products"
-                  className="py-2 text-white transition-colors duration-300 border-b border-gray-800 hover:text-blue-400"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Products
-                </Link>
-                <Link
-                  href="/support"
-                  className="py-2 text-white transition-colors duration-300 border-b border-gray-800 hover:text-blue-400"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Support
-                </Link>
+            <nav className="flex flex-col px-4 space-y-4">
+              <Link
+                href="/"
+                className="py-2 text-white border-b border-gray-800 hover:text-blue-400"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                href="/build"
+                className="py-2 text-white border-b border-gray-800 hover:text-blue-400"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Build PC
+              </Link>
+              <Link
+                href="/products"
+                className="py-2 text-white border-b border-gray-800 hover:text-blue-400"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Products
+              </Link>
+              <Link
+                href="/support"
+                className="py-2 text-white border-b border-gray-800 hover:text-blue-400"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Support
+              </Link>
 
-                <div className="flex justify-between pt-2">
-                  <button className="transition-colors duration-300 hover:text-blue-400">
-                    <SearchIcon size={20} />
+              <div className="flex justify-between pt-2">
+                <button className="hover:text-blue-400">
+                  <SearchIcon size={20} />
+                </button>
+                <button className="hover:text-blue-400">
+                  <UserIcon size={20} />
+                </button>
+                {isProductsPage && (
+                  <button className="relative hover:text-blue-400">
+                    <ShoppingCartIcon size={20} />
+                    <span className="absolute flex items-center justify-center w-5 h-5 text-xs bg-blue-500 rounded-full -top-2 -right-2">
+                      3
+                    </span>
                   </button>
-                  <button className="transition-colors duration-300 hover:text-blue-400">
-                    <UserIcon size={20} />
-                  </button>
-                  {isProductsPage && (
-                    <button className="relative transition-colors duration-300 hover:text-blue-400">
-                      <ShoppingCartIcon size={20} />
-                      <span className="absolute flex items-center justify-center w-5 h-5 text-xs bg-blue-500 rounded-full -top-2 -right-2">
-                        3
-                      </span>
+                )}
+              </div>
+
+              <div className="flex flex-col pt-2 space-y-2">
+                {isLoggedIn ? (
+                  <>
+                    <span>{username}</span>
+                    <button
+                      onClick={logout}
+                      className="text-left text-white hover:text-red-400"
+                    >
+                      Logout
                     </button>
-                  )}
-                </div>
-
-                <div className="flex flex-col pt-2 space-y-2">
-                  {isLoggedIn ? (
-                    <>
-                      <span className="text-white">{username}</span>
-                      <button
-                        onClick={logout}
-                        className="text-left text-white transition-colors hover:text-red-400"
-                      >
-                        Logout
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        href="/login"
-                        className="text-white transition-colors hover:text-blue-400"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Login
-                      </Link>
-                      <Link
-                        href="/register"
-                        className="text-white transition-colors hover:text-blue-400"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Sign Up
-                      </Link>
-                    </>
-                  )}
-                </div>
-              </nav>
-            </div>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="text-white hover:text-blue-400"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/register"
+                      className="text-white hover:text-blue-400"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
+            </nav>
           </motion.div>
         )}
       </div>
