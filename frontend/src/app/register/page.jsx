@@ -25,11 +25,11 @@ export default function Register() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ 
-                    username, 
-                    password, 
-                    email, 
-                    fullname: fullName 
+                body: JSON.stringify({
+                    username,
+                    password,
+                    email,
+                    fullname: fullName,
                 }),
             });
 
@@ -42,16 +42,38 @@ export default function Register() {
             login(data.token, username);
             router.push("/");
         } catch (err) {
-            setError(err.message);
+            setError(err.message || "Something went wrong.");
         }
-    }
+    };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
+        <div
+  className="flex flex-col items-center justify-center min-h-screen px-4 py-12 pt-20 bg-center bg-no-repeat bg-cover lg:flex-row lg:px-6 lg:py-16"
+  style={{
+    backgroundImage: `url('https://i.postimg.cc/tJq87xLM/image.png')`,
+  }}
+>
+
+            {/* Left Side - Image / Info */}
+            <div className="hidden w-full max-w-md p-8 bg-blue-600 rounded-r-lg lg:block lg:w-1/2">
+                <h2 className="text-3xl font-bold text-white">Welcome to TechBuildPC</h2>
+                <p className="mt-4 text-blue-100">
+                    Create an account to start building your dream PC today.
+                </p>
+                <div className="relative mt-6 overflow-hidden rounded-lg shadow-xl h-72 bg-gradient-to-br from-blue-500 to-indigo-600">
+                    <img
+                        src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        alt="Gaming PC Setup"
+                        className="object-cover w-full h-full"
+                    />
+                </div>
+            </div>
+
+            {/* Right Side - Registration Form */}
+            <div className="w-full max-w-md p-6 space-y-8 bg-white rounded-lg shadow-md lg:w-1/2 lg:rounded-l-none">
                 <div>
-                    <h2 className="text-center text-3xl font-bold text-gray-900">Create an Account</h2>
-                    <p className="mt-2 text-center text-sm text-gray-600">
+                    <h2 className="text-3xl font-bold text-center text-gray-900">Create an Account</h2>
+                    <p className="mt-2 text-sm text-center text-gray-600">
                         Already have an account?{" "}
                         <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
                             Sign in
@@ -60,7 +82,7 @@ export default function Register() {
                 </div>
 
                 {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                    <div className="px-4 py-3 text-red-700 bg-red-100 border border-red-400 rounded">
                         {error}
                     </div>
                 )}
@@ -78,7 +100,7 @@ export default function Register() {
                                 required
                                 value={fullName}
                                 onChange={(e) => setFullName(e.target.value)}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="John Doe"
                             />
                         </div>
@@ -94,7 +116,7 @@ export default function Register() {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="you@example.com"
                             />
                         </div>
@@ -110,7 +132,7 @@ export default function Register() {
                                 required
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="johndoe123"
                             />
                         </div>
@@ -126,7 +148,7 @@ export default function Register() {
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -135,12 +157,18 @@ export default function Register() {
                     <div>
                         <button
                             type="submit"
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >
                             Register
                         </button>
                     </div>
                 </form>
+
+                <div className="text-center">
+                    <Link href="/login" className="text-sm text-blue-600 hover:underline">
+                        Already have an account? Sign in
+                    </Link>
+                </div>
             </div>
         </div>
     );
