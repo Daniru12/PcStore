@@ -96,6 +96,7 @@ export default function Header() {
                 <span className="ml-4 text-sm font-medium text-white">
                   Hello, {username}
                 </span>
+                <Link href="/profile" className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-md hover:bg-blue-700">Profile</Link>
                 <button
                   onClick={logout}
                   className="px-4 py-2 text-sm font-medium text-white transition-colors bg-red-600 rounded-md hover:bg-red-700"

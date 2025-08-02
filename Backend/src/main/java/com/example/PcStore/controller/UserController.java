@@ -39,4 +39,11 @@ public class UserController {
     public ResponseEntity<User> getUser(@PathVariable String username) {
         return ResponseEntity.ok(userService.findByUsername(username));
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<User> getProfile(org.springframework.security.core.Authentication authentication) {
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+        return ResponseEntity.ok(user);
+    }
 } 
